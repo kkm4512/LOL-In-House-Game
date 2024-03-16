@@ -1,0 +1,189 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { LolUserPlayers } from 'type.ts/Lol-User-Players';
+
+function shuffleArray(array: any) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]]; // ES6의 구조 분해 할당을 사용하여 요소를 교환
+  }
+  return array;
+}
+
+@Injectable()
+export class AppService {
+  teamSplitting(lolUserPlayers: LolUserPlayers[]): {
+    A_Team: LolUserPlayers[];
+    B_Team: LolUserPlayers[];
+  } {
+    let score = 0;
+    while (true) {
+      score += 1;
+      const shuffledNumbers = shuffleArray(lolUserPlayers);
+      let A_Team = shuffledNumbers.slice(0, 5);
+      let B_Team = shuffledNumbers.slice(5, 10);
+
+      let A_Team_score: LolUserPlayers = A_Team.reduce(
+        (a: number, b: { mmr: number }) => a + b.mmr,
+        0,
+      );
+      let B_Team_score: LolUserPlayers = B_Team.reduce(
+        (a: number, b: { mmr: number }) => a + b.mmr,
+        0,
+      );
+      if ( Math.abs( Number(A_Team_score) - Number(B_Team_score) ) <= 2000) {
+        return { A_Team, B_Team };
+      } else if (score === 1000) {
+        throw new UnauthorizedException(
+          '해당 인원들로 올바른 팀이 나누어 지지않습니다. (티어차이가 매우심함) ',
+        );
+      }
+    }
+  }
+
+  /**
+   *
+   * 1. 팀 라인별로 배분해야함
+   */
+  teamLineSplitting(lolUserPlayers: LolUserPlayers[]) {
+    while (true) {
+      const A_Team_Array: string[] = [];
+      const B_Team_Array: string[] = [];
+      let { A_Team, B_Team } = this.teamSplitting(lolUserPlayers);
+
+      A_Team.forEach((item) => {
+        A_Team_Array.push(item.mainRole);
+      });
+      B_Team.forEach((item) => {
+        B_Team_Array.push(item.mainRole);
+      });
+
+      // 중복 제거된 라인 배열 생성
+      const set_A_Team_Array = [...new Set(A_Team_Array)];
+      const set_B_Team_Array = [...new Set(B_Team_Array)];
+
+      // 이미 선택된 라인을 추적할 Set 생성
+      const selected_A_Roles = new Set();
+      const selected_B_Roles = new Set();
+
+      // A_Team에서 중복되지 않은 라인의 플레이어만 필터링
+      const seted_A_Team = A_Team.filter((item) => {
+        // set_A_Team_Array에 포함되어 있고, 아직 선택되지 않은 라인이라면 필터링에 포함
+        if (
+          set_A_Team_Array.includes(item.mainRole) &&
+          !selected_A_Roles.has(item.mainRole)
+        ) {
+          selected_A_Roles.add(item.mainRole);
+          return true;
+        }
+        return false;
+      });
+
+      const seted_B_Team = B_Team.filter((item) => {
+        // set_A_Team_Array에 포함되어 있고, 아직 선택되지 않은 라인이라면 필터링에 포함
+        if (
+          set_B_Team_Array.includes(item.mainRole) &&
+          !selected_B_Roles.has(item.mainRole)
+        ) {
+          selected_B_Roles.add(item.mainRole);
+          return true;
+        }
+        return false;
+      });
+
+      // 필요한 로직 수행...
+      if (
+        seted_A_Team.length === 3 ||
+        (seted_A_Team.length === 4 && seted_B_Team.length === 3) ||
+        seted_B_Team.length === 4
+      ) {
+        return { seted_A_Team, seted_B_Team, A_Team, B_Team };
+      }
+    }
+  }
+
+  /**
+   * 1. A,B팀에 있는 인원 3~4명씩은 주라인을 맞춤
+   * 2. 그럼 나머지 1~2명인원의 subRole을 하나씩 넣어봐줘서
+   * 3. 중복되지않은 array 5개가되면 통과
+   * 4. 일단 그 나머지 1~2명이 누군지먼저 찾아야할듯
+   */
+  teamLineMainSubRoleDivision(lolUserPlayers: LolUserPlayers[]): {
+    seted_A_Team: LolUserPlayers[];
+    seted_B_Team: LolUserPlayers[];
+    remaining_A_Team: LolUserPlayers[];
+    remaining_B_Team: LolUserPlayers[];
+  } {
+    const { seted_A_Team, seted_B_Team, A_Team, B_Team } =
+      this.teamLineSplitting(lolUserPlayers);
+    const selected_A_Team_Names = new Set(
+      seted_A_Team.map((player) => player.name),
+    );
+    const selected_B_Team_Names = new Set(
+      seted_B_Team.map((player) => player.name),
+    );
+    const remaining_A_Team = A_Team.filter(
+      (player) => !selected_A_Team_Names.has(player.name),
+    );
+    const remaining_B_Team = B_Team.filter(
+      (player) => !selected_B_Team_Names.has(player.name),
+    );
+    return { seted_A_Team, seted_B_Team, remaining_A_Team, remaining_B_Team };
+  }
+
+  /**
+   * 1. A팀, B팀 3,4명씩 있고 = seted_A_Team,seted_B_Team
+   * 2. A팀, B팀 에대한 나머지 인원 1,2명씩도 이씅 = remaining_A_Team,remaining_B_Team
+   * 3. 이제 A팀의 자리에 1,2명의 인원인 subRole을 하나씩 집어넣어봄
+   * 4. 그리고 최종적으로 계산했을떄 중복되지않은 length가 5개되면 성공 ( 일단 여기까지 )
+   *
+   */
+  teamLineDistribution(lolUserPlayers: LolUserPlayers[]) {
+    let attempts = 0;
+    const maxAttempts = 1000;
+    while (attempts < maxAttempts) {
+      const { seted_A_Team, seted_B_Team, remaining_A_Team, remaining_B_Team } =
+        this.teamLineMainSubRoleDivision(lolUserPlayers);
+
+      // A팀 라인업 완성 로직
+      remaining_A_Team.forEach((player) => {
+        if (seted_A_Team.length < 5) {
+          // subRole 배열을 순회하면서 현재 팀 라인업에 추가할 수 있는지 확인
+          for (const subRole of player.subRole) {
+            // player.subRoles는 ['정글', '원딜', '미드']와 같은 배열
+            const canBeAdded = !seted_A_Team.some(
+              (setedPlayer) => setedPlayer.mainRole === subRole,
+            );
+            if (canBeAdded) {
+              seted_A_Team.push({ ...player, mainRole: subRole }); // mainRole을 subRole로 설정하여 추가
+              break; // 중복되지 않는 subRole을 찾았으므로 추가 후 반복 중단
+            }
+          }
+        }
+      });
+
+      // B팀 라인업 완성 로직
+      remaining_B_Team.forEach((player) => {
+        if (seted_B_Team.length < 5) {
+          for (const subRole of player.subRole) {
+            const canBeAdded = !seted_B_Team.some(
+              (setedPlayer) => setedPlayer.mainRole === subRole,
+            );
+            if (canBeAdded) {
+              seted_B_Team.push({ ...player, mainRole: subRole });
+              break; // 중복되지 않는 subRole을 찾아 추가 후 반복 중단
+            }
+          }
+        }
+      });
+
+      if (seted_A_Team.length === 5 && seted_B_Team.length === 5) {
+        return { seted_A_Team, seted_B_Team };
+      }
+
+      attempts++;
+
+    }
+    
+    throw new UnauthorizedException('팀 분배를 완성할 수 없습니다. 부라인이 적절하게 설정되지 않았습니다.');
+  }
+}
