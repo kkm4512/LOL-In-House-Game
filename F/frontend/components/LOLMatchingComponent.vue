@@ -4,18 +4,33 @@
       <div class="team">
         <h2 class="team-title mr-7">A팀</h2>
         <ul>
-          <li v-for="player in usersStore.users.seted_A_Team" :key="player.name" class="player mt-20">
+          <li
+            v-for="player in usersStore.users.seted_A_Team"
+            :key="player.name"
+            class="player mt-20"
+          >
+            <img :src="`../static/${player.tier.split(' ')[0]}.jpg`" />
+
+            <!-- <img :src="`../public/${player.tier.split(' ')[0]}.jpg`" /> -->
             {{ player.mainRole }} {{ player.name }}
           </li>
         </ul>
       </div>
 
-      <img src="../static/Vs.jpg" />
+      <div class="vs-container">
+        <img src="../public/Vs.jpg" alt="VS" class="vs-image" />
+        <div class="vs-text">[심롤]</div>
+      </div>
 
       <div class="team">
         <h2 class="team-title mr-7">B팀</h2>
         <ul>
-          <li v-for="player in usersStore.users.seted_B_Team" :key="player.name" class="player mt-20">
+          <li
+            v-for="player in usersStore.users.seted_B_Team"
+            :key="player.name"
+            class="player mt-20"
+          >
+            <img :src="`../static/${player.tier.split(' ')[0]}.jpg`" />
             {{ player.mainRole }} {{ player.name }}
           </li>
         </ul>
@@ -25,7 +40,7 @@
 </template>
 
 <script setup>
-import { useLOLPlayerUserInfo } from '~/stores/LOL-Player-info';
+import { useLOLPlayerUserInfo } from "~/stores/LOL-Player-info";
 const usersStore = useLOLPlayerUserInfo();
 </script>
 
@@ -58,7 +73,6 @@ const usersStore = useLOLPlayerUserInfo();
 
 .player {
   list-style-type: none;
-  font-size: 1.5rem
+  font-size: 1.5rem;
 }
-
 </style>
