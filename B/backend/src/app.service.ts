@@ -186,4 +186,62 @@ export class AppService {
     
     throw new UnauthorizedException('팀 분배를 완성할 수 없습니다. 부라인이 적절하게 설정되지 않았습니다.');
   }
+
+  //맨처음 A팀 멤버의 주라인과, 최종의 A팀 멤버의 주라인이 상이하다면, mmr -400 진행후 팀 다시섞기
+
+  teamMainRoleSubRoleCheckMinusMMR(lolUserPlayers: LolUserPlayers[]){
+    const { seted_A_Team, seted_B_Team } = this.teamLineDistribution(lolUserPlayers);
+  
+    // seted_A_Team과 seted_B_Team에 있는 모든 플레이어의 원래 mainRole 추적
+    const roleCheckMap = new Map<string, string>();
+    seted_A_Team.concat(seted_B_Team).forEach(player => {
+      roleCheckMap.set(player.name, player.mainRole);
+    });
+  
+    // lolUserPlayers를 순회하며 mainRole이 다르면 mmr을 400 차감하고, 주라인을 배정된 부라인으로 변경
+    const adjustedPlayers = lolUserPlayers.map(player => {
+      // 현재 플레이어가 seted_A_Team 또는 seted_B_Team에 배정되었고 mainRole이 다르다면 mmr 차감 및 mainRole 변경
+      if (roleCheckMap.has(player.name) && roleCheckMap.get(player.name) !== player.mainRole) {
+        return { ...player, mmr: player.mmr - 400, mainRole: roleCheckMap.get(player.name) }; // mainRole을 배정된 부라인으로 변경
+      } else {
+        return { ...player };
+      }
+    });
+  
+    return adjustedPlayers;
+  }
+
+  sortTeamByMainRole(team: LolUserPlayers[]): LolUserPlayers[] {
+
+    const positionPriority = {
+      "탑": 1,
+      "정글": 2,
+      "미드": 3,
+      "원딜": 4,
+      "서폿": 5
+    };
+
+    return team.sort((a, b) => positionPriority[a.mainRole] - positionPriority[b.mainRole]);
+  }  
+  
+  createBalancedTeams(lolUserPlayers: LolUserPlayers[]) {
+    // 초기 팀 분배 수행
+    let { seted_A_Team, seted_B_Team } = this.teamLineDistribution(lolUserPlayers);
+  
+    // MMR 조정 로직 실행
+    const adjustedPlayers = this.teamMainRoleSubRoleCheckMinusMMR(lolUserPlayers);
+  
+    // 조정된 MMR을 반영한 팀 재분배
+    let finalDistribution = this.teamLineDistribution(adjustedPlayers);
+  
+    // A팀 멤버의 mainRole에 따라 순서 조정
+    finalDistribution.seted_A_Team = this.sortTeamByMainRole(finalDistribution.seted_A_Team);
+    finalDistribution.seted_B_Team = this.sortTeamByMainRole(finalDistribution.seted_B_Team);
+  
+    // 최종 팀 분배 결과 반환 또는 추가 처리
+    return finalDistribution;
+  }
+  
+  
+
 }

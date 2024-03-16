@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
+    "sass": "^1.72.0"
+  }
+}

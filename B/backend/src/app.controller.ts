@@ -14,6 +14,6 @@ export class AppController {
   lolInHouseGame(
     @Body() lolUserPlayers:LolUserPlayers[]
   ) {
-    return this.appService.teamLineDistribution(lolUserPlayers) 
+    return this.appService.createBalancedTeams(lolUserPlayers) 
   }
 }

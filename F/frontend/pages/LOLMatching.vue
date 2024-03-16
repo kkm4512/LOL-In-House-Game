@@ -1,10 +1,12 @@
 <template>
   <div>
-    LOLMatching.vue
+    <LOLMatchingComponent />
   </div>
 </template>
 
 <script setup>
+import LOLMatchingComponent from '~/components/LOLMatchingComponent.vue';
+
 
 </script>
 
