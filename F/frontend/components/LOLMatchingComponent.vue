@@ -2,36 +2,56 @@
   <div class="content-container">
     <div class="teams-container">
       <div class="team">
-        <h2 class="team-title mr-7">A팀</h2>
+        <h2 class="team-title flex justify-center items-center">A팀</h2>
+        <div class="flex justify-center items-center">
+          <div class="text-2xl">
+            A팀 Score :
+            {{ usersStore.users.seted_A_Team.reduce((a, b) => a + b.mmr, 0) }}
+          </div>
+        </div>
         <ul>
           <li
             v-for="player in usersStore.users.seted_A_Team"
             :key="player.name"
             class="player mt-20"
           >
-            <img :src="`../static/${player.tier.split(' ')[0]}.jpg`" />
-
-            <!-- <img :src="`../public/${player.tier.split(' ')[0]}.jpg`" /> -->
-            {{ player.mainRole }} {{ player.name }}
+            <div class="flex justify-center items-center">
+              <img :src="`../static/${player.tier.split(' ')[0]}.jpg`" />
+              {{ player.mainRole }} {{ player.name }}
+            </div>
           </li>
         </ul>
       </div>
 
       <div class="vs-container">
-        <img src="../public/Vs.jpg" alt="VS" class="vs-image" />
-        <div class="vs-text">[심롤]</div>
+        <div class="text-3xl flex justify-center">
+          심심한데 롤이나할까?
+        </div>
+        <hr class="border-2 border-black mt-2" />
+        <div class="flex justify-center mt-10">
+          <img src="../static/포로.jpg" class="border-2 boder-black" />
+        </div>
+        <img src="../static/Vs.jpg" alt="VS" class="vs-image" />
       </div>
 
       <div class="team">
-        <h2 class="team-title mr-7">B팀</h2>
+        <h2 class="team-title flex justify-center items-center">B팀</h2>
+        <div class="flex justify-center items-center">
+          <div class="text-2xl">
+            B팀 Score :
+            {{ usersStore.users.seted_B_Team.reduce((a, b) => a + b.mmr, 0) }}
+          </div>
+        </div>
         <ul>
           <li
             v-for="player in usersStore.users.seted_B_Team"
             :key="player.name"
             class="player mt-20"
           >
-            <img :src="`../static/${player.tier.split(' ')[0]}.jpg`" />
-            {{ player.mainRole }} {{ player.name }}
+            <div class="flex justify-center items-center">
+              <img :src="`../static/${player.tier.split(' ')[0]}.jpg`" />
+              {{ player.mainRole }} {{ player.name }}
+            </div>
           </li>
         </ul>
       </div>
