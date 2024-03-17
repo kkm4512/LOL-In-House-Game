@@ -16,7 +16,10 @@
             class="player mt-20"
           >
             <div class="flex justify-center items-center font-black">
-              <img :src="`../static/${player.tier.split(' ')[0]}.jpg`"  class="h-[5rem] "/>
+              <img
+                :src="`../static/${player.tier.split(' ')[0]}.jpg`"
+                class="h-[7rem]"
+              />
               {{ player.mainRole }} {{ player.name }}
             </div>
           </li>
@@ -49,7 +52,10 @@
             class="player mt-20"
           >
             <div class="flex justify-center items-center font-black">
-              <img :src="`../static/${player.tier.split(' ')[0]}.jpg`"  class="h-[5rem]" />
+              <img
+                :src="`../static/${player.tier.split(' ')[0]}.jpg`"
+                class="h-[7rem]"
+              />
               {{ player.mainRole }} {{ player.name }}
             </div>
           </li>
