@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen gap-4 p-12">
+  <div class="flex flex-col h-screen gap-4 p-12 justify-center">
     <div v-for="index in 10" :key="index" class="flex items-center gap-4 justify-center">
       <input
         type="text"

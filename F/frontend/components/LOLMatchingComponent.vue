@@ -1,7 +1,7 @@
 <template>
   <div class="content-container">
     <div class="teams-container">
-      <div class="team">
+      <div class="team border-2 rounded-xl border-red-500 p-5">
         <h2 class="team-title flex justify-center items-center">A팀</h2>
         <div class="flex justify-center items-center">
           <div class="text-2xl">
@@ -15,8 +15,8 @@
             :key="player.name"
             class="player mt-20"
           >
-            <div class="flex justify-center items-center">
-              <img :src="`../static/${player.tier.split(' ')[0]}.jpg`" />
+            <div class="flex justify-center items-center font-black">
+              <img :src="`../static/${player.tier.split(' ')[0]}.jpg`"  class="h-[5rem] "/>
               {{ player.mainRole }} {{ player.name }}
             </div>
           </li>
@@ -24,7 +24,7 @@
       </div>
 
       <div class="vs-container">
-        <div class="text-3xl flex justify-center">
+        <div class="text-3xl flex justify-center mt-[10%]">
           심심한데 롤이나할까?
         </div>
         <hr class="border-2 border-black mt-2" />
@@ -34,7 +34,7 @@
         <img src="../static/Vs.jpg" alt="VS" class="vs-image" />
       </div>
 
-      <div class="team">
+      <div class="team border-2 rounded-xl border-blue-500 p-5">
         <h2 class="team-title flex justify-center items-center">B팀</h2>
         <div class="flex justify-center items-center">
           <div class="text-2xl">
@@ -48,8 +48,8 @@
             :key="player.name"
             class="player mt-20"
           >
-            <div class="flex justify-center items-center">
-              <img :src="`../static/${player.tier.split(' ')[0]}.jpg`" />
+            <div class="flex justify-center items-center font-black">
+              <img :src="`../static/${player.tier.split(' ')[0]}.jpg`"  class="h-[5rem]" />
               {{ player.mainRole }} {{ player.name }}
             </div>
           </li>
