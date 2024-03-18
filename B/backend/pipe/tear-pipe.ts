@@ -7,7 +7,7 @@ export class ChangeTierPipe implements PipeTransform {
       return value;
     }
 
-    return value.map(item => {
+    return value.map((item) => {
       // 티어와 등급 분리 (예: "아이언 1" -> ["아이언", "1"])
       const [tier, division] = item.tier.split(' ');
 
@@ -18,13 +18,32 @@ export class ChangeTierPipe implements PipeTransform {
   }
 
   calculateMMR(tier: string, division: number): number {
-    const tiers = ["아이언", "브론즈", "실버", "골드", "플래티넘", "에메랄드", "다이아몬드", "마스터", "그랜드마스터", "챌린저"];
+    const fixedMMR = {
+      마스터: 3000,
+      그랜드마스터: 4000,
+      챌린저: 5000,
+    };
+
+    // 고정된 MMR 값 확인
+    if (fixedMMR[tier]) {
+      return fixedMMR[tier];
+    }
+
+    const tiers = [
+      '아이언',
+      '브론즈',
+      '실버',
+      '골드',
+      '플래티넘',
+      '에메랄드',
+      '다이아몬드',
+    ]; // 마스터 이상은 고정 MMR을 사용하므로 리스트에서 제외
     const divisions = [4, 3, 2, 1];
     let mmrStart = 0;
     const mmrIncrease = 100;
 
     // 티어 인덱스 찾기
-    const tierIndex = tiers.findIndex(t => t === tier);
+    const tierIndex = tiers.findIndex((t) => t === tier);
     // 등급에 따른 MMR 계산 (등급이 4부터 시작하기 때문에 4에서 division을 빼고 1을 더함)
     const divisionIndex = 4 - division + 1;
 

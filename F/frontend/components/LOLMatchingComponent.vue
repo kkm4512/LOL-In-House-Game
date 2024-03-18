@@ -20,6 +20,7 @@
                 :src="`../static/${player.tier.split(' ')[0]}.jpg`"
                 class="h-[7rem]"
               />
+              <!-- 내일와서 고치자 라인이 미드인데 미 로밖에 안보임-->
               {{ player.mainRole }} {{ player.name }}
             </div>
           </li>

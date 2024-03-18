@@ -3,7 +3,7 @@ import type { LolUserPlayers } from "~/types/LOl-User-Players";
 
 export const useLOLPlayerUserInfo = defineStore("user", {
   state: () => ({
-    users: [{}],
+    users: [{}] as LolUserPlayers[],
   }),
   actions: {
     updateUsers(usersInfo: LolUserPlayers[]) {

@@ -30,20 +30,34 @@
       <button class="border-2 rounded-lg p-2 cursor-pointer" @click="handleAllClick(index - 1)">ALL</button>
     </div>
     <button @click="submitForm" class="mt-4 p-2 bg-blue-600 text-white rounded w-auto self-center">확인</button>
+    <button @click="piniaStoreUserInfo" class="mt-4 p-2 bg-blue-600 text-white rounded w-auto self-center">이전 플레이어 목록</button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive } from "vue";
-import  LOLMatchingComponent  from '~/components/LOLMatchingComponent.vue';
 import type { ErrorType } from "~/types/errorType"
 const playersData = ref()
 import { useRouter } from "vue-router";
 const router = useRouter()
 import { useLOLPlayerUserInfo } from "~/stores/LOL-Player-info";
 import type { LolUserPlayers } from "~/types/LOl-User-Players";
-const user = useLOLPlayerUserInfo()
+const usersStore = useLOLPlayerUserInfo()
 
+function piniaStoreUserInfo(){
+  for ( let i=0; i<5; i++ ) {
+    formData[i].mainRole = usersStore.users.seted_A_Team[i].mainRole
+    formData[i].name = usersStore.users.seted_A_Team[i].name
+    formData[i].subRole = usersStore.users.seted_A_Team[i].subRole
+    formData[i].tier = usersStore.users.seted_A_Team[i].tier
+  }
+  for ( let i=0; i<5; i++ ) {
+    formData[i+5].mainRole = usersStore.users.seted_B_Team[i].mainRole
+    formData[i+5].name = usersStore.users.seted_B_Team[i].name
+    formData[i+5].subRole = usersStore.users.seted_B_Team[i].subRole
+    formData[i+5].tier = usersStore.users.seted_B_Team[i].tier
+  }  
+}
 
 
 const formData = reactive(
@@ -90,8 +104,7 @@ async function submitForm() {
     body: JSON.stringify(formData),
   }) 
 
-  console.log(response)
-  user.updateUsers(response)
+  usersStore.updateUsers(response)
   router.push('LOLMatching')
   
 
