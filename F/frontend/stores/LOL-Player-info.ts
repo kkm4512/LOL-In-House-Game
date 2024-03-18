@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
-import type { LolUserPlayers } from "~/types/LOl-User-Players";
+import type { LoLUserPlayers } from "~/types/LOl-User-Players";
 
 export const useLOLPlayerUserInfo = defineStore("user", {
   state: () => ({
-    users: [{}] as LolUserPlayers[],
+    users: {} as LoLUserPlayers,
   }),
   actions: {
-    updateUsers(usersInfo: LolUserPlayers[]) {
+    updateUsers(usersInfo: LoLUserPlayers) {
       this.users = usersInfo;
     },
   },

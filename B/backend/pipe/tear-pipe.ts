@@ -14,7 +14,9 @@ export class ChangeTierPipe implements PipeTransform {
       // MMR 계산
       const mmr = this.calculateMMR(tier, parseInt(division));
       return { ...item, mmr };
+      
     });
+    
   }
 
   calculateMMR(tier: string, division: number): number {
@@ -58,6 +60,8 @@ export class ChangeTierPipe implements PipeTransform {
 
     // 해당 등급에 대한 MMR 추가
     mmrStart += (divisionIndex - 1) * mmrIncrease;
+
+    
 
     return mmrStart;
   }

@@ -37,21 +37,31 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import type { ErrorType } from "~/types/errorType"
-const playersData = ref()
 import { useRouter } from "vue-router";
 const router = useRouter()
 import { useLOLPlayerUserInfo } from "~/stores/LOL-Player-info";
 import type { LolUserPlayers } from "~/types/LOl-User-Players";
 const usersStore = useLOLPlayerUserInfo()
 
+interface FormData {
+  name: string;
+  mainRole: string;
+  tier: string;
+  subRole: string[]; // 타입을 string[]로 변경
+}
+
+
 function piniaStoreUserInfo(){
+  console.log(usersStore.users.seted_A_Team[0].subRole)
   for ( let i=0; i<5; i++ ) {
     formData[i].mainRole = usersStore.users.seted_A_Team[i].mainRole
     formData[i].name = usersStore.users.seted_A_Team[i].name
     formData[i].subRole = usersStore.users.seted_A_Team[i].subRole
     formData[i].tier = usersStore.users.seted_A_Team[i].tier
+    
   }
   for ( let i=0; i<5; i++ ) {
+    console.log(formData[i+5])
     formData[i+5].mainRole = usersStore.users.seted_B_Team[i].mainRole
     formData[i+5].name = usersStore.users.seted_B_Team[i].name
     formData[i+5].subRole = usersStore.users.seted_B_Team[i].subRole
@@ -60,12 +70,12 @@ function piniaStoreUserInfo(){
 }
 
 
-const formData = reactive(
+const formData = reactive<FormData[]>(
   Array.from({ length: 10 }, () => ({
     name: "",
     mainRole: "",
     tier: "",
-    subRole: "",
+    subRole: [],
   }))
 );
 
@@ -90,7 +100,8 @@ function handleAllClick(index:any) {
   
   // subRole에 주라인을 제외한 나머지 라인을 문자열로 저장
   // 예: 탑을 주라인으로 선택했을 경우, "정글,미드,원딜,서폿" 이런 식으로 저장
-  formData[index].subRole = otherRoles.join(',');
+  formData[index].subRole = otherRoles; // 문자열 배열로 할당
+
 }
 
 async function submitForm() {
@@ -104,6 +115,8 @@ async function submitForm() {
     body: JSON.stringify(formData),
   }) 
 
+  console.log('formData : ', formData)
+  console.log('response : ',response)
   usersStore.updateUsers(response)
   router.push('LOLMatching')
   

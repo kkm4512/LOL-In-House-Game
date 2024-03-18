@@ -17,10 +17,9 @@
           >
             <div class="flex justify-center items-center font-black">
               <img
-                :src="`../static/${player.tier.split(' ')[0]}.jpg`"
-                class="h-[7rem]"
+                :src="`../static/${player.tier.split(' ')[0]}.png`"
+                class="h-[6rem]"
               />
-              <!-- 내일와서 고치자 라인이 미드인데 미 로밖에 안보임-->
               {{ player.mainRole }} {{ player.name }}
             </div>
           </li>
@@ -54,8 +53,8 @@
           >
             <div class="flex justify-center items-center font-black">
               <img
-                :src="`../static/${player.tier.split(' ')[0]}.jpg`"
-                class="h-[7rem]"
+                :src="`../static/${player.tier.split(' ')[0]}.png`"
+                class="h-[6rem]"
               />
               {{ player.mainRole }} {{ player.name }}
             </div>
