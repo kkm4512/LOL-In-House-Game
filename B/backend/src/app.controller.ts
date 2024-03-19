@@ -12,4 +12,9 @@ export class AppController {
   lolInHouseGame(@Body() lolUserPlayers: LolUserPlayers[]) {
     return this.appService.validateAndProcessPlayers(lolUserPlayers);
   }
+
+  @Get()
+  deployCheck(){
+    return "Deploy On"
+  }
 }
