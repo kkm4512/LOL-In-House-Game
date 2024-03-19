@@ -113,10 +113,8 @@ async function submitForm() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(formData),
-  }) 
+  })  as LolUserPlayers[]
 
-  console.log('formData : ', formData)
-  console.log('response : ',response)
   usersStore.updateUsers(response)
   router.push('LOLMatching')
   
