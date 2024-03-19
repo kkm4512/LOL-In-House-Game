@@ -14,7 +14,7 @@ export class AppController {
   }
 
   @Get()
-  deployCheck(){
-    return "Deploy On"
+  deployCheck() {
+    return 'Deploy On!';
   }
 }
