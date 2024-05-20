@@ -154,18 +154,37 @@ export class AppService {
         this.teamLineMainSubRoleDivision(lolUserPlayers);
 
       // A팀 라인업 완성 로직
-
-
+    
       remaining_A_Team.forEach((player) => {
+        let subRole;
+
+
+        /**
+         * 여기가 문제임 !!!
+         */
         if (seted_A_Team.length < 5) {
           // subRole 배열을 순회하면서 현재 팀 라인업에 추가할 수 있는지 확인
-          for (const subRole of player.subRole) {
+          for (subRole of player.subRole) {
+            if (subRole.length >= 2) {
+            } else {
+              if (subRole[1] === undefined) {
+                subRole = subRole[0]
+              } else {
+                subRole = subRole[0] + subRole[1]
+              }
+              
+            }
+
+            console.log(subRole)
             // player.subRoles는 ['정글', '원딜', '미드']와 같은 배열
+            
+            
             const canBeAdded = !seted_A_Team.some(
               (setedPlayer) => setedPlayer.mainRole === subRole,
             );
             if (canBeAdded) {
               seted_A_Team.push({ ...player, mainRole: subRole }); // mainRole을 subRole로 설정하여 추가
+      
               break; // 중복되지 않는 subRole을 찾았으므로 추가 후 반복 중단
             }
           }
@@ -206,6 +225,7 @@ export class AppService {
   teamMainRoleSubRoleCheckMinusMMR(lolUserPlayers: LolUserPlayers[]) {
     const { seted_A_Team, seted_B_Team } =
       this.teamLineDistribution(lolUserPlayers);
+
 
     // seted_A_Team과 seted_B_Team에 있는 모든 플레이어의 원래 mainRole 추적
     const roleCheckMap = new Map<string, string>();

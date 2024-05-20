@@ -79,14 +79,13 @@ function piniaStoreUserInfo() {
   for (let i = 0; i < 5; i++) {
     formData[i].mainRole = usersStore.users.seted_A_Team[i].mainRole;
     formData[i].name = usersStore.users.seted_A_Team[i].name;
-    formData[i].subRole = usersStore.users.seted_A_Team[i].subRole;
+    formData[i].subRole = usersStore?.users.seted_A_Team[i].subRole;
     formData[i].tier = usersStore.users.seted_A_Team[i].tier;
   }
   for (let i = 0; i < 5; i++) {
-    console.log(formData[i + 5]);
     formData[i + 5].mainRole = usersStore.users.seted_B_Team[i].mainRole;
     formData[i + 5].name = usersStore.users.seted_B_Team[i].name;
-    formData[i + 5].subRole = usersStore.users.seted_B_Team[i].subRole;
+    formData[i + 5].subRole = usersStore?.users.seted_B_Team[i].subRole;
     formData[i + 5].tier = usersStore.users.seted_B_Team[i].tier;
   }
 }
@@ -159,6 +158,7 @@ async function submitForm() {
         body: JSON.stringify(formData),
       }
     )) as LolUserPlayers[];
+
 
     usersStore.updateUsers(response);
     router.push("LOLMatching");
