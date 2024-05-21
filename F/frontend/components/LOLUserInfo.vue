@@ -147,6 +147,7 @@ function handleAllClick(index: any) {
 }
 
 async function submitForm() {
+  const Team = [];
   try {
     const response: LolUserPlayers[] = (await $fetch(
       "http://localhost:3001",
@@ -159,9 +160,32 @@ async function submitForm() {
       }
     )) as LolUserPlayers[];
 
+  for (let i = 0; i < 5; i++) {
 
-    usersStore.updateUsers(response);
-    router.push("LOLMatching");
+    const userInfo = {
+      mainRole : formData[i].mainRole,
+      name : formData[i].name,
+      subRole : formData[i].subRole,
+      tier : formData[i].tier,
+    }
+    Team.push(userInfo)    
+  }
+  // usersStore.updateUsers(A_Team);
+  for (let i = 0; i < 5; i++) {
+    const userInfo = {
+      mainRole : formData[i].mainRole,
+      name : formData[i].name,
+      subRole : formData[i].subRole,
+      tier : formData[i].tier,
+    }    
+    Team.push(userInfo)
+  }
+  // usersStore.updateUsers(B_Team);
+
+  console.log(Team)
+  usersStore.updateUsers(Team)
+  router.push("LOLMatching");
+  
   } catch (error) {
     if (error instanceof Error && "response" in error) {
       const typedError = error.response as ErrorType;

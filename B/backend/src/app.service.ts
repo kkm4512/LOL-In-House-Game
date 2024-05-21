@@ -57,14 +57,9 @@ export class AppService {
         B_Team_Array.push(item.mainRole);
       });
 
-      
-
-
       // 중복 제거된 라인 배열 생성
       const set_A_Team_Array = [...new Set(A_Team_Array)];
       const set_B_Team_Array = [...new Set(B_Team_Array)];
-
-
 
       // 이미 선택된 라인을 추적할 Set 생성
       const selected_A_Roles = new Set();
@@ -82,7 +77,6 @@ export class AppService {
         }
         return false;
       });
-
 
       const seted_B_Team = B_Team.filter((item) => {
         // set_A_Team_Array에 포함되어 있고, 아직 선택되지 않은 라인이라면 필터링에 포함
@@ -134,8 +128,6 @@ export class AppService {
       (player) => !selected_B_Team_Names.has(player.name),
     );
 
-
-
     return { seted_A_Team, seted_B_Team, remaining_A_Team, remaining_B_Team };
   }
 
@@ -154,59 +146,55 @@ export class AppService {
         this.teamLineMainSubRoleDivision(lolUserPlayers);
 
       // A팀 라인업 완성 로직
-    
-      remaining_A_Team.forEach((player) => {
-        let subRole;
-
-
-        /**
-         * 여기가 문제임 !!!
-         */
-        if (seted_A_Team.length < 5) {
-          // subRole 배열을 순회하면서 현재 팀 라인업에 추가할 수 있는지 확인
-          for (subRole of player.subRole) {
-            if (subRole.length >= 2) {
-            } else {
-              if (subRole[1] === undefined) {
-                subRole = subRole[0]
+      for (let player of remaining_A_Team) {
+        let a = player.subRole;
+        for (let subRole of player.subRole) {
+          if (seted_A_Team.length < 5) {
+              if (Array.isArray(player.subRole)) {
               } else {
-                subRole = subRole[0] + subRole[1]
+                if (a.length === 1) {
+                  subRole = a[0];
+                } else if (a.length === 2){
+                  subRole = a[0] + a[1];
+                }
               }
-              
-            }
-
-            console.log(subRole)
-            // player.subRoles는 ['정글', '원딜', '미드']와 같은 배열
-            
-            
+            //만약 Array값일 경우 ex) ["탑","미드"] ["서폿","미드"]
             const canBeAdded = !seted_A_Team.some(
               (setedPlayer) => setedPlayer.mainRole === subRole,
             );
             if (canBeAdded) {
               seted_A_Team.push({ ...player, mainRole: subRole }); // mainRole을 subRole로 설정하여 추가
-      
               break; // 중복되지 않는 subRole을 찾았으므로 추가 후 반복 중단
             }
           }
         }
-
-
-      });
+      }
 
       // B팀 라인업 완성 로직
-      remaining_B_Team.forEach((player) => {
-        if (seted_B_Team.length < 5) {
-          for (const subRole of player.subRole) {
+      for (let player of remaining_B_Team) {
+        let b = player.subRole;
+        for (let subRole of player.subRole) {
+          if (seted_B_Team.length < 5) {
+              if (Array.isArray(player.subRole)) {
+              } else {
+                if (b.length === 1) {
+                  subRole = b[0];
+                } else if (b.length === 2){
+                  subRole = b[0] + b[1];
+                }
+
+              }
+            //만약 Array값일 경우 ex) ["탑","미드"] ["서폿","미드"]
             const canBeAdded = !seted_B_Team.some(
               (setedPlayer) => setedPlayer.mainRole === subRole,
             );
             if (canBeAdded) {
-              seted_B_Team.push({ ...player, mainRole: subRole });
-              break; // 중복되지 않는 subRole을 찾아 추가 후 반복 중단
+              seted_B_Team.push({ ...player, mainRole: subRole }); // mainRole을 subRole로 설정하여 추가
+              break; // 중복되지 않는 subRole을 찾았으므로 추가 후 반복 중단
             }
           }
         }
-      });
+      }
 
       if (seted_A_Team.length === 5 && seted_B_Team.length === 5) {
         return { seted_A_Team, seted_B_Team };
@@ -226,14 +214,11 @@ export class AppService {
     const { seted_A_Team, seted_B_Team } =
       this.teamLineDistribution(lolUserPlayers);
 
-
     // seted_A_Team과 seted_B_Team에 있는 모든 플레이어의 원래 mainRole 추적
     const roleCheckMap = new Map<string, string>();
     seted_A_Team.concat(seted_B_Team).forEach((player) => {
       roleCheckMap.set(player.name, player.mainRole);
     });
-
-    
 
     // lolUserPlayers를 순회하며 mainRole이 다르면 mmr을 400 차감하고, 주라인을 배정된 부라인으로 변경
     const adjustedPlayers = lolUserPlayers.map((player) => {
@@ -251,7 +236,6 @@ export class AppService {
         return { ...player };
       }
     });
-
 
     return adjustedPlayers;
   }
@@ -275,7 +259,7 @@ export class AppService {
     let allRolesValid = true;
 
     // 모든 플레이어의 mainRole 검증
-    lolUserPlayers.forEach(player => {
+    lolUserPlayers.forEach((player) => {
       if (!validRoles.includes(player.mainRole)) {
         allRolesValid = false;
         // 여기서 올바르지 않은 mainRole을 가진 플레이어를 처리할 수 있습니다.
@@ -284,7 +268,9 @@ export class AppService {
     });
 
     if (!allRolesValid) {
-      throw new UnauthorizedException('플레이어 중에 잘못된 주 역할(mainRole)을 가진 사람이 있습니다.');
+      throw new UnauthorizedException(
+        '플레이어 중에 잘못된 주 역할(mainRole)을 가진 사람이 있습니다.',
+      );
     }
 
     // 모든 플레이어의 mainRole이 유효하면, 팀을 생성하는 로직을 실행
@@ -292,13 +278,12 @@ export class AppService {
   }
 
   createBalancedTeams(lolUserPlayers: LolUserPlayers[]) {
-    lolUserPlayers.forEach(player => {
+    lolUserPlayers.forEach((player) => {
       if (player.mmr < 0) {
         console.error(`Player ${player.name} has negative MMR, setting to 0.`);
         player.mmr = 0; // MMR을 0으로 설정하여 음수 값을 방지
       }
     });
-
 
     // 초기 팀 분배 수행
     let { seted_A_Team, seted_B_Team } =

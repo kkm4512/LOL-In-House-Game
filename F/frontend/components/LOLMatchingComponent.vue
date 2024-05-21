@@ -5,6 +5,9 @@
         <h2 class="team-title flex justify-center items-center">A팀</h2>
         <div class="flex justify-center items-center">
           <div class="text-2xl">
+            <!-- 생각해보니 여기가 문제네 -->
+            <!-- 피니아에 저장하는 값을 바꿨으니까 여기서도 다르게 접근해야함 내일하자 ㅇㅇ; -->
+
             A팀 Score :
             {{ usersStore.users.seted_A_Team.reduce((a, b) => a + b.mmr, 0) }}
           </div>
@@ -103,7 +106,7 @@ const usersStore = useLOLPlayerUserInfo();
 }
 
 body {
-    transform: scale(0.67);
-    transform-origin: top center; /* 확대/축소 기준점을 상단 중앙으로 설정 */
-  }
+  transform: scale(0.67);
+  transform-origin: top center; /* 확대/축소 기준점을 상단 중앙으로 설정 */
+}
 </style>

@@ -28,3 +28,10 @@ export interface LoLUserPlayers {
   seted_B_Team: LoLUserPlayer[];
 }
 
+export interface newLoLUserPlayers {
+  name: string;
+  mainRole: string;
+  subRole: string[];
+  tier: string; 
+}
+
