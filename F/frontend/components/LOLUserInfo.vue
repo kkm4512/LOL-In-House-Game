@@ -78,6 +78,7 @@ interface FormData {
 
 function piniaStoreUserInfo() {
   for (let i = 0; i < 5; i++) {
+<<<<<<< HEAD
     formData[i].mainRole = usersStore.A_Team[i].mainRole
     formData[i].name =usersStore.A_Team[i].name
     formData[i].subRole = usersStore.A_Team[i].subRole
@@ -88,6 +89,19 @@ function piniaStoreUserInfo() {
     formData[i+5].name =usersStore.B_Team[i+5].name
     formData[i+5].subRole = usersStore.B_Team[i+5].subRole
     formData[i+5].tier = usersStore.B_Team[i+5].tier
+=======
+    formData[i].mainRole = usersStore.users.seted_A_Team[i].mainRole;
+    formData[i].name = usersStore.users.seted_A_Team[i].name;
+    formData[i].subRole = usersStore.users.seted_A_Team[i].subRole;
+    formData[i].tier = usersStore.users.seted_A_Team[i].tier;
+  }
+  for (let i = 0; i < 5; i++) {
+    console.log(formData[i + 5]);
+    formData[i + 5].mainRole = usersStore.users.seted_B_Team[i].mainRole;
+    formData[i + 5].name = usersStore.users.seted_B_Team[i].name;
+    formData[i + 5].subRole = usersStore.users.seted_B_Team[i].subRole;
+    formData[i + 5].tier = usersStore.users.seted_B_Team[i].tier;
+>>>>>>> parent of 1144d2fe (문제발견)
   }
 }
 
@@ -169,6 +183,7 @@ async function submitForm() {
       }
     )) as LolUserPlayers[];
 
+<<<<<<< HEAD
   for (let i = 0; i < 5; i++) {
 
     const userInfo = {
@@ -193,6 +208,10 @@ async function submitForm() {
   usersStore.updateUsers(Team)
   router.push("LOLMatching");
   
+=======
+    usersStore.updateUsers(response);
+    router.push("LOLMatching");
+>>>>>>> parent of 1144d2fe (문제발견)
   } catch (error) {
     if (error instanceof Error && "response" in error) {
       const typedError = error.response as ErrorType;

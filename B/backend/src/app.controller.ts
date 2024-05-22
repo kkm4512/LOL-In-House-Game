@@ -10,6 +10,7 @@ export class AppController {
   @Post()
   @UsePipes(ChangeTierPipe)
   lolInHouseGame(@Body() lolUserPlayers: LolUserPlayers[]) {
+    console.log(lolUserPlayers)
     return this.appService.validateAndProcessPlayers(lolUserPlayers);
   }
 

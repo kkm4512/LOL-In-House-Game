@@ -146,6 +146,7 @@ export class AppService {
         this.teamLineMainSubRoleDivision(lolUserPlayers);
 
       // A팀 라인업 완성 로직
+<<<<<<< HEAD
       for (let player of remaining_A_Team) {
         let a = player.subRole;
         for (let subRole of player.subRole) {
@@ -159,6 +160,15 @@ export class AppService {
                 }
               }
             //만약 Array값일 경우 ex) ["탑","미드"] ["서폿","미드"]
+=======
+
+
+      remaining_A_Team.forEach((player) => {
+        if (seted_A_Team.length < 5) {
+          // subRole 배열을 순회하면서 현재 팀 라인업에 추가할 수 있는지 확인
+          for (const subRole of player.subRole) {
+            // player.subRoles는 ['정글', '원딜', '미드']와 같은 배열
+>>>>>>> parent of 1144d2fe (문제발견)
             const canBeAdded = !seted_A_Team.some(
               (setedPlayer) => setedPlayer.mainRole === subRole,
             );
