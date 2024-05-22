@@ -78,30 +78,16 @@ interface FormData {
 
 function piniaStoreUserInfo() {
   for (let i = 0; i < 5; i++) {
-<<<<<<< HEAD
-    formData[i].mainRole = usersStore.A_Team[i].mainRole
-    formData[i].name =usersStore.A_Team[i].name
-    formData[i].subRole = usersStore.A_Team[i].subRole
-    formData[i].tier = usersStore.A_Team[i].tier
+    formData[i].mainRole = usersStore.seted_A_Team[i].mainRole
+    formData[i].name =usersStore.seted_A_Team[i].name
+    formData[i].subRole = usersStore.seted_A_Team[i].subRole
+    formData[i].tier = usersStore.seted_A_Team[i].tier
   }
   for (let i = 0; i < 5; i++) {
-    formData[i+5].mainRole = usersStore.B_Team[i+5].mainRole
-    formData[i+5].name =usersStore.B_Team[i+5].name
-    formData[i+5].subRole = usersStore.B_Team[i+5].subRole
-    formData[i+5].tier = usersStore.B_Team[i+5].tier
-=======
-    formData[i].mainRole = usersStore.users.seted_A_Team[i].mainRole;
-    formData[i].name = usersStore.users.seted_A_Team[i].name;
-    formData[i].subRole = usersStore.users.seted_A_Team[i].subRole;
-    formData[i].tier = usersStore.users.seted_A_Team[i].tier;
-  }
-  for (let i = 0; i < 5; i++) {
-    console.log(formData[i + 5]);
-    formData[i + 5].mainRole = usersStore.users.seted_B_Team[i].mainRole;
-    formData[i + 5].name = usersStore.users.seted_B_Team[i].name;
-    formData[i + 5].subRole = usersStore.users.seted_B_Team[i].subRole;
-    formData[i + 5].tier = usersStore.users.seted_B_Team[i].tier;
->>>>>>> parent of 1144d2fe (문제발견)
+    formData[i+5].mainRole = usersStore.seted_B_Team[i].mainRole
+    formData[i+5].name =usersStore.seted_B_Team[i].name
+    formData[i+5].subRole = usersStore.seted_B_Team[i].subRole
+    formData[i+5].tier = usersStore.seted_B_Team[i].tier
   }
 }
 
@@ -162,17 +148,9 @@ function handleAllClick(index: any) {
 }
 
 async function submitForm() {
-  const A_Team: PlayerInfos[] = [];
-  const B_Team: PlayerInfos[] = [];
-  const Team = {
-    'A_Team' : A_Team,
-    'B_Team' : B_Team
-  }
-
-  
   
   try {
-    const response: LolUserPlayers[] = (await $fetch(
+    const response: LolUserPlayers = (await $fetch(
       "http://localhost:3001",
       {
         method: "POST",
@@ -181,37 +159,13 @@ async function submitForm() {
         },
         body: JSON.stringify(formData),
       }
-    )) as LolUserPlayers[];
-
-<<<<<<< HEAD
-  for (let i = 0; i < 5; i++) {
-
-    const userInfo = {
-      mainRole : formData[i].mainRole,
-      name : formData[i].name,
-      subRole : formData[i].subRole,
-      tier : formData[i].tier,
-    }
-    A_Team.push(userInfo)    
-  }
-  for (let i = 0; i < 5; i++) {
-    const userInfo = {
-      mainRole : formData[i].mainRole,
-      name : formData[i].name,
-      subRole : formData[i].subRole,
-      tier : formData[i].tier,
-    }    
-    B_Team.push(userInfo)
-  }
+    )) as LolUserPlayers;
   
-  console.log(Team)
-  usersStore.updateUsers(Team)
+  console.log(response)
+  usersStore.updateUsers(response)
+  console.log(usersStore.seted_A_Team)
   router.push("LOLMatching");
-  
-=======
-    usersStore.updateUsers(response);
-    router.push("LOLMatching");
->>>>>>> parent of 1144d2fe (문제발견)
+
   } catch (error) {
     if (error instanceof Error && "response" in error) {
       const typedError = error.response as ErrorType;

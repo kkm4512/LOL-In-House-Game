@@ -1,24 +1,26 @@
 import { defineStore } from "pinia";
-import type { LoLUserPlayers, PlayerInfos, newLoLUserPlayers } from "~/types/LOl-User-Players";
+import type {
+  LolUserPlayers,
+  PlayerInfos,
+} from "~/types/LOl-User-Players";
 
 interface UserInfo {
-  mainRole : string;
-  name : string;
-  subRole : string[];
-  tier : string
+  mainRole: string;
+  name: string;
+  subRole: string[];
+  tier: string;
 }
 
 export const useLOLPlayerUserInfo = defineStore("user", {
   state: () => ({
-    A_Team: [] as PlayerInfos[],
-    B_Team: [] as PlayerInfos[]
+    seted_A_Team: [] as PlayerInfos[],
+    seted_B_Team: [] as PlayerInfos[],
   }),
 
-  
   actions: {
-    updateUsers(usersInfo: newLoLUserPlayers) {
-      this.A_Team = usersInfo.A_Team,
-      this.B_Team = usersInfo.B_Team
+    updateUsers(usersInfo: LolUserPlayers) {
+      this.seted_A_Team = usersInfo.seted_A_Team;
+      this.seted_B_Team = usersInfo.seted_B_Team;
     },
   },
   persist: true,

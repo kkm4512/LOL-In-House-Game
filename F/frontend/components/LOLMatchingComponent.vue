@@ -8,13 +8,13 @@
             <!-- 생각해보니 여기가 문제네 -->
             <!-- 피니아에 저장하는 값을 바꿨으니까 여기서도 다르게 접근해야함 내일하자 ㅇㅇ; -->
 
-            <!-- A팀 Score :
-            {{ usersStore.users.seted_A_Team.reduce((a, b) => a + b.mmr, 0) }} -->
+            A팀 Score :
+            {{ usersStore.seted_A_Team.reduce((a, b) => a + b.mmr, 0) }}
           </div>
         </div>
         <ul>
           <li
-            v-for="player in usersStore.A_Team"
+            v-for="player in usersStore.seted_A_Team"
             :key="player.name"
             class="player mt-20"
           >
@@ -30,12 +30,8 @@
       </div>
 
       <div class="vs-container">
-        <div class="text-3xl flex justify-center mt-[10%]">
-          심심한데 롤이나할까?
-        </div>
-        <hr class="border-2 border-black mt-2" />
         <div class="flex justify-center mt-10">
-          <img src="/static/포로.jpg" class="border-2 boder-black" />
+          <img src="/static/lulu.png" class="lulu border-2 boder-black"  />
         </div>
         <img src="/static/Vs.jpg" alt="VS" class="vs-image" />
       </div>
@@ -44,13 +40,13 @@
         <h2 class="team-title flex justify-center items-center">B팀</h2>
         <div class="flex justify-center items-center">
           <div class="text-2xl">
-            <!-- B팀 Score :
-            {{ usersStore.users.seted_B_Team.reduce((a, b) => a + b.mmr, 0) }} -->
+            B팀 Score :
+            {{ usersStore.seted_B_Team.reduce((a, b) => a + b.mmr, 0) }}
           </div>
         </div>
         <ul>
           <li
-            v-for="player in usersStore.B_Team"
+            v-for="player in usersStore.seted_B_Team"
             :key="player.name"
             class="player mt-20"
           >
@@ -74,6 +70,10 @@ const usersStore = useLOLPlayerUserInfo();
 </script>
 
 <style scoped>
+.lulu {
+  width: 300px;
+  height: 300px;
+}
 .content-container {
   display: flex;
   justify-content: center;

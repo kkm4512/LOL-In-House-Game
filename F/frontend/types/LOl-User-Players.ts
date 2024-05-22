@@ -1,19 +1,8 @@
 export interface LolUserPlayers {
-  seted_A_Team: {
-    name: string;
-    mainRole: string;
-    subRole: string[];
-    tier: string;
-    mmr: number;
-  };
-  seted_B_Team: {
-    name: string;
-    mainRole: string;
-    subRole: string[];
-    tier: string;
-    mmr: number;
-  };
+  seted_A_Team: PlayerInfos[];
+  seted_B_Team: PlayerInfos[];
 }
+
 
 export interface LoLUserPlayer {
   name: string;
@@ -29,8 +18,8 @@ export interface LoLUserPlayers {
 }
 
 export interface newLoLUserPlayers {
-  A_Team: PlayerInfos[];
-  B_Team: PlayerInfos[];
+  seted_A_Team: PlayerInfos[];
+  seted_B_Team: PlayerInfos[];
 }
 
 export interface PlayerInfos {
@@ -38,5 +27,6 @@ export interface PlayerInfos {
   mainRole: string;
   subRole: string[];
   tier: string; 
+  mmr: number;
 }
 
