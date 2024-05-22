@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { LolUserPlayers } from 'type.ts/Lol-User-Players';
+import { LolUserPlayers, lastLOLUserPlayers } from 'type.ts/Lol-User-Players';
 
 function shuffleArray(array: any) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -308,4 +308,6 @@ export class AppService {
     // 최종 팀 분배 결과 반환 또는 추가 처리
     return finalDistribution;
   }
+
+
 }
