@@ -29,6 +29,11 @@ export interface LoLUserPlayers {
 }
 
 export interface newLoLUserPlayers {
+  A_Team: PlayerInfos[];
+  B_Team: PlayerInfos[];
+}
+
+export interface PlayerInfos {
   name: string;
   mainRole: string;
   subRole: string[];

@@ -66,6 +66,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 import { useLOLPlayerUserInfo } from "~/stores/LOL-Player-info";
 import type { LolUserPlayers } from "~/types/LOl-User-Players";
+import type { PlayerInfos } from "~/types/LOl-User-Players";
 const usersStore = useLOLPlayerUserInfo();
 
 interface FormData {
@@ -77,16 +78,16 @@ interface FormData {
 
 function piniaStoreUserInfo() {
   for (let i = 0; i < 5; i++) {
-    formData[i].mainRole = usersStore.users.seted_A_Team[i].mainRole;
-    formData[i].name = usersStore.users.seted_A_Team[i].name;
-    formData[i].subRole = usersStore?.users.seted_A_Team[i].subRole;
-    formData[i].tier = usersStore.users.seted_A_Team[i].tier;
+    formData[i].mainRole = usersStore.A_Team[i].mainRole
+    formData[i].name =usersStore.A_Team[i].name
+    formData[i].subRole = usersStore.A_Team[i].subRole
+    formData[i].tier = usersStore.A_Team[i].tier
   }
   for (let i = 0; i < 5; i++) {
-    formData[i + 5].mainRole = usersStore.users.seted_B_Team[i].mainRole;
-    formData[i + 5].name = usersStore.users.seted_B_Team[i].name;
-    formData[i + 5].subRole = usersStore?.users.seted_B_Team[i].subRole;
-    formData[i + 5].tier = usersStore.users.seted_B_Team[i].tier;
+    formData[i+5].mainRole = usersStore.B_Team[i+5].mainRole
+    formData[i+5].name =usersStore.B_Team[i+5].name
+    formData[i+5].subRole = usersStore.B_Team[i+5].subRole
+    formData[i+5].tier = usersStore.B_Team[i+5].tier
   }
 }
 
@@ -147,7 +148,15 @@ function handleAllClick(index: any) {
 }
 
 async function submitForm() {
-  const Team = [];
+  const A_Team: PlayerInfos[] = [];
+  const B_Team: PlayerInfos[] = [];
+  const Team = {
+    'A_Team' : A_Team,
+    'B_Team' : B_Team
+  }
+
+  
+  
   try {
     const response: LolUserPlayers[] = (await $fetch(
       "http://localhost:3001",
@@ -168,9 +177,8 @@ async function submitForm() {
       subRole : formData[i].subRole,
       tier : formData[i].tier,
     }
-    Team.push(userInfo)    
+    A_Team.push(userInfo)    
   }
-  // usersStore.updateUsers(A_Team);
   for (let i = 0; i < 5; i++) {
     const userInfo = {
       mainRole : formData[i].mainRole,
@@ -178,10 +186,9 @@ async function submitForm() {
       subRole : formData[i].subRole,
       tier : formData[i].tier,
     }    
-    Team.push(userInfo)
+    B_Team.push(userInfo)
   }
-  // usersStore.updateUsers(B_Team);
-
+  
   console.log(Team)
   usersStore.updateUsers(Team)
   router.push("LOLMatching");
