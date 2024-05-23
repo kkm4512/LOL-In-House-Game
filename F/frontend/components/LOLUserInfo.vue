@@ -66,7 +66,8 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 import { useLOLPlayerUserInfo } from "~/stores/LOL-Player-info";
 import type { LolUserPlayers } from "~/types/LOl-User-Players";
-import type { PlayerInfos } from "~/types/LOl-User-Players";
+import { useFirstUsers } from "~/stores/First-LOL-Player-info";
+const useFirstUsersStore = useFirstUsers();
 const usersStore = useLOLPlayerUserInfo();
 
 interface FormData {
@@ -78,16 +79,14 @@ interface FormData {
 
 function piniaStoreUserInfo() {
   for (let i = 0; i < 5; i++) {
-    formData[i].mainRole = usersStore.seted_A_Team[i].mainRole
-    formData[i].name =usersStore.seted_A_Team[i].name
-    formData[i].subRole = usersStore.seted_A_Team[i].subRole
-    formData[i].tier = usersStore.seted_A_Team[i].tier
-  }
-  for (let i = 0; i < 5; i++) {
-    formData[i+5].mainRole = usersStore.seted_B_Team[i].mainRole
-    formData[i+5].name =usersStore.seted_B_Team[i].name
-    formData[i+5].subRole = usersStore.seted_B_Team[i].subRole
-    formData[i+5].tier = usersStore.seted_B_Team[i].tier
+    formData[i].mainRole = useFirstUsersStore.A_Team[i].mainRole
+    formData[i].name = useFirstUsersStore.A_Team[i].name
+    formData[i].subRole = useFirstUsersStore.A_Team[i].subRole
+    formData[i].tier = useFirstUsersStore.A_Team[i].tier
+    formData[i+5].mainRole = useFirstUsersStore.B_Team[i].mainRole
+    formData[i+5].name = useFirstUsersStore.B_Team[i].name
+    formData[i+5].subRole = useFirstUsersStore.B_Team[i].subRole
+    formData[i+5].tier = useFirstUsersStore.B_Team[i].tier
   }
 }
 
@@ -99,6 +98,14 @@ const formData = reactive<FormData[]>(
     subRole: [],
   }))
 );
+
+const A_Team = formData.slice(0,5)
+const B_Team = formData.slice(5,10)
+
+const Team = {
+  'A_Team' : A_Team,
+  'B_Team' : B_Team
+}
 
 const roles = ["탑", "정글", "미드", "원딜", "서폿"];
 const tiers = [
@@ -160,10 +167,12 @@ async function submitForm() {
         body: JSON.stringify(formData),
       }
     )) as LolUserPlayers;
+
+    
   
-  console.log(response)
+  
   usersStore.updateUsers(response)
-  console.log(usersStore.seted_A_Team)
+  useFirstUsersStore.updateFirstUsersUpdate(Team)
   router.push("LOLMatching");
 
   } catch (error) {

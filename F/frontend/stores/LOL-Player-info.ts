@@ -4,12 +4,6 @@ import type {
   PlayerInfos,
 } from "~/types/LOl-User-Players";
 
-interface UserInfo {
-  mainRole: string;
-  name: string;
-  subRole: string[];
-  tier: string;
-}
 
 export const useLOLPlayerUserInfo = defineStore("user", {
   state: () => ({

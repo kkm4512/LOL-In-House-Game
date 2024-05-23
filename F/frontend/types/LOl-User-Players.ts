@@ -30,3 +30,15 @@ export interface PlayerInfos {
   mmr: number;
 }
 
+export interface FirstLoLUserPlayers {
+  A_Team: FirstPlayerInofs[]
+  B_Team: FirstPlayerInofs[]
+}
+
+export interface FirstPlayerInofs {
+  name: string;
+  mainRole: string;
+  subRole: string[];
+  tier: string;   
+}
+
