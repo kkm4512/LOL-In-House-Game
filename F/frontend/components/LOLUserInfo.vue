@@ -44,6 +44,15 @@
         ALL
       </button>
     </div>
+    <div class="flex justify-center items-center h-screen">
+      <div class="mr-2 text-lg">팀간의 밸런스 차이 :</div>
+      <select class="border-2 border-black rounded-lg w-1/5 h-12 text-center" v-model="balanceSelected">
+        <option class="text-center text-lg">매우 잘맞음</option>
+        <option class="text-center text-lg">적당히 잘맞음</option>
+        <option class="text-center text-lg">걍 내맘대로 짬 ㅅㄱ</option>
+      </select>
+    </div>
+
     <button
       @click="submitForm"
       class="mt-4 p-2 bg-blue-600 text-white rounded w-auto self-center"
@@ -69,6 +78,7 @@ import type { LolUserPlayers } from "~/types/LOl-User-Players";
 import { useFirstUsers } from "~/stores/First-LOL-Player-info";
 const useFirstUsersStore = useFirstUsers();
 const usersStore = useLOLPlayerUserInfo();
+const balanceSelected = ref('매우 잘맞음')
 
 interface FormData {
   name: string;
@@ -79,14 +89,14 @@ interface FormData {
 
 function piniaStoreUserInfo() {
   for (let i = 0; i < 5; i++) {
-    formData[i].mainRole = useFirstUsersStore.A_Team[i].mainRole
-    formData[i].name = useFirstUsersStore.A_Team[i].name
-    formData[i].subRole = useFirstUsersStore.A_Team[i].subRole
-    formData[i].tier = useFirstUsersStore.A_Team[i].tier
-    formData[i+5].mainRole = useFirstUsersStore.B_Team[i].mainRole
-    formData[i+5].name = useFirstUsersStore.B_Team[i].name
-    formData[i+5].subRole = useFirstUsersStore.B_Team[i].subRole
-    formData[i+5].tier = useFirstUsersStore.B_Team[i].tier
+    formData[i].mainRole = useFirstUsersStore.A_Team[i].mainRole;
+    formData[i].name = useFirstUsersStore.A_Team[i].name;
+    formData[i].subRole = useFirstUsersStore.A_Team[i].subRole;
+    formData[i].tier = useFirstUsersStore.A_Team[i].tier;
+    formData[i + 5].mainRole = useFirstUsersStore.B_Team[i].mainRole;
+    formData[i + 5].name = useFirstUsersStore.B_Team[i].name;
+    formData[i + 5].subRole = useFirstUsersStore.B_Team[i].subRole;
+    formData[i + 5].tier = useFirstUsersStore.B_Team[i].tier;
   }
 }
 
@@ -99,13 +109,13 @@ const formData = reactive<FormData[]>(
   }))
 );
 
-const A_Team = formData.slice(0,5)
-const B_Team = formData.slice(5,10)
+const A_Team = formData.slice(0, 5);
+const B_Team = formData.slice(5, 10);
 
 const Team = {
-  'A_Team' : A_Team,
-  'B_Team' : B_Team
-}
+  A_Team: A_Team,
+  B_Team: B_Team,
+};
 
 const roles = ["탑", "정글", "미드", "원딜", "서폿"];
 const tiers = [
@@ -155,26 +165,25 @@ function handleAllClick(index: any) {
 }
 
 async function submitForm() {
-  
+
   try {
-    const response: LolUserPlayers = (await $fetch(
-      "http://localhost:3001",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      }
-    )) as LolUserPlayers;
+    const response: LolUserPlayers = (await $fetch("http://localhost:3001", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body:JSON.stringify(formData)
+      // body: {
+      //   formData: JSON.stringify(formData),
+      //   balanceSelected : balanceSelected.value
+      // },
+      
+    })) as LolUserPlayers;
 
-    
-  
-  
-  usersStore.updateUsers(response)
-  useFirstUsersStore.updateFirstUsersUpdate(Team)
-  router.push("LOLMatching");
 
+    usersStore.updateUsers(response);
+    useFirstUsersStore.updateFirstUsersUpdate(Team);
+    router.push("LOLMatching");
   } catch (error) {
     if (error instanceof Error && "response" in error) {
       const typedError = error.response as ErrorType;
