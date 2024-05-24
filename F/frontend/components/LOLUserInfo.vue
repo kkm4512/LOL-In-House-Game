@@ -46,7 +46,10 @@
     </div>
     <div class="flex justify-center items-center h-screen">
       <div class="mr-2 text-lg">팀간의 밸런스 차이 :</div>
-      <select class="border-2 border-black rounded-lg w-1/5 h-12 text-center" v-model="balanceSelected">
+      <select
+        class="border-2 border-black rounded-lg w-1/5 h-12 text-center"
+        v-model="balanceSelected"
+      >
         <option class="text-center text-lg">매우 잘맞음</option>
         <option class="text-center text-lg">적당히 잘맞음</option>
         <option class="text-center text-lg">걍 내맘대로 짬 ㅅㄱ</option>
@@ -65,6 +68,9 @@
     >
       이전 플레이어 목록
     </button>
+    <button @click="test" class="border-2 border-black h-full w-full">
+      Test
+    </button>
   </div>
 </template>
 
@@ -78,13 +84,95 @@ import type { LolUserPlayers } from "~/types/LOl-User-Players";
 import { useFirstUsers } from "~/stores/First-LOL-Player-info";
 const useFirstUsersStore = useFirstUsers();
 const usersStore = useLOLPlayerUserInfo();
-const balanceSelected = ref('매우 잘맞음')
+const balanceSelected = ref("매우 잘맞음");
 
 interface FormData {
   name: string;
   mainRole: string;
   tier: string;
   subRole: string[]; // 타입을 string[]로 변경
+}
+
+function test() {
+  const Team = {
+    A_Team: [
+      {
+        name: "player10",
+        mainRole: "탑",
+        tier: "브론즈 4",
+        subRole: ["정글", "미드", "원딜", "서폿"],
+      },
+      {
+        name: "player1",
+        mainRole: "정글",
+        tier: "실버 4",
+        subRole: ["탑", "미드", "원딜", "서폿"],
+      },
+      {
+        name: "player2",
+        mainRole: "미드",
+        tier: "골드 4",
+        subRole: ["탑", "정글", "원딜", "서폿"],
+      },
+      {
+        name: "player3",
+        mainRole: "서폿",
+        tier: "플래티넘 4",
+        subRole: ["탑", "정글", "미드", "원딜"],
+      },
+      {
+        name: "player4",
+        mainRole: "원딜",
+        tier: "다이아몬드 4",
+        subRole: ["탑", "정글", "미드", "서폿"],
+      },
+    ],
+    B_Team: [
+      {
+        name: "player5",
+        mainRole: "탑",
+        tier: "브론즈 4",
+        subRole: ["정글", "미드", "원딜", "서폿"],
+      },
+      {
+        name: "player6",
+        mainRole: "정글",
+        tier: "실버 4",
+        subRole: ["탑", "미드", "원딜", "서폿"],
+      },
+      {
+        name: "player7",
+        mainRole: "서폿",
+        tier: "골드 4",
+        subRole: ["탑", "정글", "미드", "원딜"],
+      },
+      {
+        name: "player8",
+        mainRole: "미드",
+        tier: "플래티넘 4",
+        subRole: ["탑", "정글", "원딜", "서폿"],
+      },
+      {
+        name: "player9",
+        mainRole: "탑",
+        tier: "다이아몬드 4",
+        subRole: ["정글", "미드", "원딜", "서폿"],
+      },
+    ],
+  };
+
+  useFirstUsersStore.updateFirstUsersUpdate(Team);
+
+  for (let i = 0; i < 5; i++) {
+    formData[i].mainRole = useFirstUsersStore.A_Team[i].mainRole;
+    formData[i].name = useFirstUsersStore.A_Team[i].name;
+    formData[i].subRole = useFirstUsersStore.A_Team[i].subRole;
+    formData[i].tier = useFirstUsersStore.A_Team[i].tier;
+    formData[i + 5].mainRole = useFirstUsersStore.B_Team[i].mainRole;
+    formData[i + 5].name = useFirstUsersStore.B_Team[i].name;
+    formData[i + 5].subRole = useFirstUsersStore.B_Team[i].subRole;
+    formData[i + 5].tier = useFirstUsersStore.B_Team[i].tier;
+  }
 }
 
 function piniaStoreUserInfo() {
@@ -165,21 +253,29 @@ function handleAllClick(index: any) {
 }
 
 async function submitForm() {
-
   try {
     const response: LolUserPlayers = (await $fetch("http://localhost:3001", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body:JSON.stringify(formData)
+      body: JSON.stringify(formData),
       // body: {
       //   formData: JSON.stringify(formData),
       //   balanceSelected : balanceSelected.value
       // },
-      
     })) as LolUserPlayers;
 
+    const response1: LolUserPlayers = (await $fetch(
+      "http://localhost:3001/test",
+      {
+        method: "POST",
+        body: {
+          formData: JSON.stringify(formData),
+          balanceSelected: balanceSelected.value,
+        },
+      }
+    )) as LolUserPlayers;
 
     usersStore.updateUsers(response);
     useFirstUsersStore.updateFirstUsersUpdate(Team);

@@ -12,6 +12,12 @@ export class AppController {
   lolInHouseGame(@Body() lolUserPlayers: LolUserPlayers[]) {
     return this.appService.validateAndProcessPlayers(lolUserPlayers);
   }
+  
+  @Post('test')
+  @UsePipes(ChangeTierPipe)
+  inputChecked(@Body() testInput: any) {
+    console.log(testInput)
+  }
 
   @Get()
   deployCheck() {
