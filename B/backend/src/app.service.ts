@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { LolUserPlayers, lastLOLUserPlayers } from 'type.ts/Lol-User-Players';
+import { LoLUserPlayers } from 'DTO/dto';
 
 function shuffleArray(array: any) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -11,22 +11,23 @@ function shuffleArray(array: any) {
 
 @Injectable()
 export class AppService {
-  teamSplitting(lolUserPlayers: LolUserPlayers[]): {
-    A_Team: LolUserPlayers[];
-    B_Team: LolUserPlayers[];
+  teamSplitting(lolUserPlayers: LoLUserPlayers[]): {
+    A_Team: LoLUserPlayers[];
+    B_Team: LoLUserPlayers[];
   } {
     let score = 0;
+    console.log(lolUserPlayers)
     while (true) {
       score += 1;
       const shuffledNumbers = shuffleArray(lolUserPlayers);
       let A_Team = shuffledNumbers.slice(0, 5);
       let B_Team = shuffledNumbers.slice(5, 10);
 
-      let A_Team_score: LolUserPlayers = A_Team.reduce(
+      let A_Team_score: LoLUserPlayers[] = A_Team.reduce(
         (a: number, b: { mmr: number }) => a + b.mmr,
         0,
       );
-      let B_Team_score: LolUserPlayers = B_Team.reduce(
+      let B_Team_score: LoLUserPlayers[] = B_Team.reduce(
         (a: number, b: { mmr: number }) => a + b.mmr,
         0,
       );
@@ -44,7 +45,7 @@ export class AppService {
    *
    * 1. 팀 라인별로 배분해야함
    */
-  teamLineSplitting(lolUserPlayers: LolUserPlayers[]) {
+  teamLineSplitting(lolUserPlayers: LoLUserPlayers[]) {
     while (true) {
       const A_Team_Array: string[] = [];
       const B_Team_Array: string[] = [];
@@ -107,11 +108,11 @@ export class AppService {
    * 3. 중복되지않은 array 5개가되면 통과
    * 4. 일단 그 나머지 1~2명이 누군지먼저 찾아야할듯
    */
-  teamLineMainSubRoleDivision(lolUserPlayers: LolUserPlayers[]): {
-    seted_A_Team: LolUserPlayers[];
-    seted_B_Team: LolUserPlayers[];
-    remaining_A_Team: LolUserPlayers[];
-    remaining_B_Team: LolUserPlayers[];
+  teamLineMainSubRoleDivision(lolUserPlayers: LoLUserPlayers[]): {
+    seted_A_Team: LoLUserPlayers[];
+    seted_B_Team: LoLUserPlayers[];
+    remaining_A_Team: LoLUserPlayers[];
+    remaining_B_Team: LoLUserPlayers[];
   } {
     const { seted_A_Team, seted_B_Team, A_Team, B_Team } =
       this.teamLineSplitting(lolUserPlayers);
@@ -138,7 +139,7 @@ export class AppService {
    * 4. 그리고 최종적으로 계산했을떄 중복되지않은 length가 5개되면 성공 ( 일단 여기까지 )
    *
    */
-  teamLineDistribution(lolUserPlayers: LolUserPlayers[]) {
+  teamLineDistribution(lolUserPlayers: LoLUserPlayers[]) {
     let attempts = 0;
     const maxAttempts = 1000;
     while (attempts < maxAttempts) {
@@ -150,15 +151,14 @@ export class AppService {
         let a = player.subRole;
         for (let subRole of player.subRole) {
           if (seted_A_Team.length < 5) {
-              if (Array.isArray(player.subRole)) {
-              } else {
-                if (a.length === 1) {
-                  subRole = a[0];
-                } else if (a.length === 2){
-                  subRole = a[0] + a[1];
-                }
-
+            if (Array.isArray(player.subRole)) {
+            } else {
+              if (a.length === 1) {
+                subRole = a[0];
+              } else if (a.length === 2) {
+                subRole = a[0] + a[1];
               }
+            }
             //만약 Array값일 경우 ex) ["탑","미드"] ["서폿","미드"]
             const canBeAdded = !seted_A_Team.some(
               (setedPlayer) => setedPlayer.mainRole === subRole,
@@ -176,15 +176,14 @@ export class AppService {
         let b = player.subRole;
         for (let subRole of player.subRole) {
           if (seted_B_Team.length < 5) {
-              if (Array.isArray(player.subRole)) {
-              } else {
-                if (b.length === 1) {
-                  subRole = b[0];
-                } else if (b.length === 2){
-                  subRole = b[0] + b[1];
-                }
-
+            if (Array.isArray(player.subRole)) {
+            } else {
+              if (b.length === 1) {
+                subRole = b[0];
+              } else if (b.length === 2) {
+                subRole = b[0] + b[1];
               }
+            }
             //만약 Array값일 경우 ex) ["탑","미드"] ["서폿","미드"]
             const canBeAdded = !seted_B_Team.some(
               (setedPlayer) => setedPlayer.mainRole === subRole,
@@ -211,7 +210,7 @@ export class AppService {
 
   //맨처음 A팀 멤버의 주라인과, 최종의 A팀 멤버의 주라인이 상이하다면, mmr -400 진행후 팀 다시섞기
 
-  teamMainRoleSubRoleCheckMinusMMR(lolUserPlayers: LolUserPlayers[]) {
+  teamMainRoleSubRoleCheckMinusMMR(lolUserPlayers: LoLUserPlayers[]) {
     const { seted_A_Team, seted_B_Team } =
       this.teamLineDistribution(lolUserPlayers);
 
@@ -241,7 +240,7 @@ export class AppService {
     return adjustedPlayers;
   }
 
-  sortTeamByMainRole(team: LolUserPlayers[]): LolUserPlayers[] {
+  sortTeamByMainRole(team: LoLUserPlayers[]): LoLUserPlayers[] {
     const positionPriority = {
       탑: 1,
       정글: 2,
@@ -255,9 +254,10 @@ export class AppService {
     );
   }
 
-  validateAndProcessPlayers(lolUserPlayers: LolUserPlayers[]): any {
+  validateAndProcessPlayers(lolUserPlayers: LoLUserPlayers[]): any {
     const validRoles = ['탑', '정글', '미드', '원딜', '서폿'];
     let allRolesValid = true;
+
 
     // 모든 플레이어의 mainRole 검증
     lolUserPlayers.forEach((player) => {
@@ -278,7 +278,7 @@ export class AppService {
     return this.createBalancedTeams(lolUserPlayers);
   }
 
-  createBalancedTeams(lolUserPlayers: LolUserPlayers[]) {
+  createBalancedTeams(lolUserPlayers: LoLUserPlayers[]) {
     lolUserPlayers.forEach((player) => {
       if (player.mmr < 0) {
         console.error(`Player ${player.name} has negative MMR, setting to 0.`);
@@ -308,6 +308,4 @@ export class AppService {
     // 최종 팀 분배 결과 반환 또는 추가 처리
     return finalDistribution;
   }
-
-
 }

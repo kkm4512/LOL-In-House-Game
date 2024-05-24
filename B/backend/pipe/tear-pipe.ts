@@ -1,22 +1,22 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import { LOLInHouseGameInputDTO } from 'DTO/dto';
 
 @Injectable()
 export class ChangeTierPipe implements PipeTransform {
-  transform(value: any[], metadata: ArgumentMetadata): any {
-    if (!value || !Array.isArray(value)) {
-      return value;
+  transform(value: LOLInHouseGameInputDTO, metadata: ArgumentMetadata): any {
+    let changeValue = value.formData;
+    if (!value || !Array.isArray(changeValue)) {
+      return changeValue;
     }
 
-    return value.map((item) => {
+    return changeValue.map((item) => {
       // 티어와 등급 분리 (예: "아이언 1" -> ["아이언", "1"])
       const [tier, division] = item.tier.split(' ');
 
       // MMR 계산
       const mmr = this.calculateMMR(tier, parseInt(division));
       return { ...item, mmr };
-      
     });
-    
   }
 
   calculateMMR(tier: string, division: number): number {
@@ -60,8 +60,6 @@ export class ChangeTierPipe implements PipeTransform {
 
     // 해당 등급에 대한 MMR 추가
     mmrStart += (divisionIndex - 1) * mmrIncrease;
-
-    
 
     return mmrStart;
   }

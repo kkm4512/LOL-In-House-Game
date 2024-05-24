@@ -1,4 +1,4 @@
-export class LolUserPlayers {
+export class LoLUserPlayers {
   name: string;
   mainRole: string;
   subRole: string[];
@@ -7,6 +7,8 @@ export class LolUserPlayers {
 }
 
 export class lastLOLUserPlayers {
-  seted_A_Team: LolUserPlayers[];
-  seted_B_Team: LolUserPlayers[];
+  seted_A_Team: LoLUserPlayers[];
+  seted_B_Team: LoLUserPlayers[];
 }
+
+

@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
 import { AppService } from './app.service';
-import { LolUserPlayers } from 'type.ts/Lol-User-Players';
 import { ChangeTierPipe } from 'pipe/tear-pipe';
+import { LOLInHouseGameInputDTO } from 'DTO/dto';
+
 
 @Controller()
 export class AppController {
@@ -9,14 +10,19 @@ export class AppController {
 
   @Post()
   @UsePipes(ChangeTierPipe)
-  lolInHouseGame(@Body() lolUserPlayers: LolUserPlayers[]) {
-    return this.appService.validateAndProcessPlayers(lolUserPlayers);
+  lolInHouseGame(
+    @Body() lolUserPlayers: LOLInHouseGameInputDTO,
+  ) {
+    const {lolplayer,balance} = {lolplayer:lolUserPlayers.formData,balance:lolUserPlayers.balanceSelected}
+    return this.appService.validateAndProcessPlayers(lolplayer);
   }
   
   @Post('test')
   @UsePipes(ChangeTierPipe)
-  inputChecked(@Body() testInput: any) {
-    console.log(testInput)
+  inputChecked(
+    @Body() a:LOLInHouseGameInputDTO
+) {
+  
   }
 
   @Get()

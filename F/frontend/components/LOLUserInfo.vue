@@ -256,26 +256,11 @@ async function submitForm() {
   try {
     const response: LolUserPlayers = (await $fetch("http://localhost:3001", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+      body: {
+        formData: formData,
+        balanceSelected: balanceSelected.value,
       },
-      body: JSON.stringify(formData),
-      // body: {
-      //   formData: JSON.stringify(formData),
-      //   balanceSelected : balanceSelected.value
-      // },
     })) as LolUserPlayers;
-
-    const response1: LolUserPlayers = (await $fetch(
-      "http://localhost:3001/test",
-      {
-        method: "POST",
-        body: {
-          formData: JSON.stringify(formData),
-          balanceSelected: balanceSelected.value,
-        },
-      }
-    )) as LolUserPlayers;
 
     usersStore.updateUsers(response);
     useFirstUsersStore.updateFirstUsersUpdate(Team);
