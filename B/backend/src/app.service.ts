@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoLUserPlayers } from 'DTO/dto';
+import { FinalDistribution } from 'type.ts/Lol-User-Players';
 
 function shuffleArray(array: any) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -16,7 +17,6 @@ export class AppService {
     B_Team: LoLUserPlayers[];
   } {
     let score = 0;
-    console.log(lolUserPlayers)
     while (true) {
       score += 1;
       const shuffledNumbers = shuffleArray(lolUserPlayers);
@@ -254,10 +254,12 @@ export class AppService {
     );
   }
 
-  validateAndProcessPlayers(lolUserPlayers: LoLUserPlayers[]): any {
+  validateAndProcessPlayers(
+    lolUserPlayers: LoLUserPlayers[],
+    balance?: string,
+  ): any {
     const validRoles = ['탑', '정글', '미드', '원딜', '서폿'];
     let allRolesValid = true;
-
 
     // 모든 플레이어의 mainRole 검증
     lolUserPlayers.forEach((player) => {
@@ -275,10 +277,17 @@ export class AppService {
     }
 
     // 모든 플레이어의 mainRole이 유효하면, 팀을 생성하는 로직을 실행
-    return this.createBalancedTeams(lolUserPlayers);
+
+    return this.createBalancedTeams(lolUserPlayers, balance);
   }
 
-  createBalancedTeams(lolUserPlayers: LoLUserPlayers[]) {
+  createBalancedTeams(lolUserPlayers: LoLUserPlayers[], balance?: string) {
+
+    const balances = {
+      '매우 잘맞음' : 1000,
+      '적당히 잘맞음' : 2000,
+      '걍 내맘대로 짬 ㅅㄱ' : 4000,
+    }
     lolUserPlayers.forEach((player) => {
       if (player.mmr < 0) {
         console.error(`Player ${player.name} has negative MMR, setting to 0.`);
@@ -286,26 +295,58 @@ export class AppService {
       }
     });
 
-    // 초기 팀 분배 수행
-    let { seted_A_Team, seted_B_Team } =
-      this.teamLineDistribution(lolUserPlayers);
+    let count = 0;
+    let players = new Map<number, FinalDistribution>();
 
-    // MMR 조정 로직 실행
-    const adjustedPlayers =
-      this.teamMainRoleSubRoleCheckMinusMMR(lolUserPlayers);
+    while (count < 1000) {
+      count++
+      // 초기 팀 분배 수행
+      let { seted_A_Team, seted_B_Team } =
+        this.teamLineDistribution(lolUserPlayers);
 
-    // 조정된 MMR을 반영한 팀 재분배
-    let finalDistribution = this.teamLineDistribution(adjustedPlayers);
+      // MMR 조정 로직 실행
+      const adjustedPlayers =
+        this.teamMainRoleSubRoleCheckMinusMMR(lolUserPlayers);
 
-    // A팀 멤버의 mainRole에 따라 순서 조정
-    finalDistribution.seted_A_Team = this.sortTeamByMainRole(
-      finalDistribution.seted_A_Team,
-    );
-    finalDistribution.seted_B_Team = this.sortTeamByMainRole(
-      finalDistribution.seted_B_Team,
-    );
+      // 조정된 MMR을 반영한 팀 재분배
+      let finalDistribution: FinalDistribution = this.teamLineDistribution(adjustedPlayers);
 
-    // 최종 팀 분배 결과 반환 또는 추가 처리
-    return finalDistribution;
+      // A팀 멤버의 mainRole에 따라 순서 조정
+      finalDistribution.seted_A_Team = this.sortTeamByMainRole(
+        finalDistribution.seted_A_Team,
+      );
+      finalDistribution.seted_B_Team = this.sortTeamByMainRole(
+        finalDistribution.seted_B_Team,
+      );
+
+      let A_TEAM_MMR = 0;
+      let B_TEAM_MMR = 0;
+      const rank: {score:number | undefined; id:number | undefined}[] = [];
+
+      for ( let i=0; i < finalDistribution.seted_A_Team.length; i++){
+        A_TEAM_MMR += finalDistribution.seted_A_Team[i].mmr;
+        B_TEAM_MMR += finalDistribution.seted_B_Team[i].mmr;
+      }
+
+      const AB_TEAM_MMR = Math.abs(A_TEAM_MMR - B_TEAM_MMR)
+
+      finalDistribution = {...finalDistribution,AB_TEAM_MMR}
+
+      if ( AB_TEAM_MMR >= balances[balance] ) continue
+      players.set(count,finalDistribution)
+      if (count === 9) {
+        for ( let i=1; i<=10; i++ ) {
+          const has = players.has(i)
+          const get = players.get(i)
+          if (has) {
+            rank.push({score:get.AB_TEAM_MMR,id:i})
+          }
+        }
+        const minScoreObject = rank.reduce((min, item) => item.score < min.score ? item : min, rank[0]);
+        const minScoreId = minScoreObject.id;
+        if (!rank) count = 0;
+        return players.get(minScoreId)
+      }
+    }
   }
 }

@@ -14,7 +14,7 @@ export class AppController {
     @Body() lolUserPlayers: LOLInHouseGameInputDTO,
   ) {
     const {lolplayer,balance} = {lolplayer:lolUserPlayers.formData,balance:lolUserPlayers.balanceSelected}
-    return this.appService.validateAndProcessPlayers(lolplayer);
+    return this.appService.validateAndProcessPlayers(lolplayer,balance);
   }
   
   @Post('test')

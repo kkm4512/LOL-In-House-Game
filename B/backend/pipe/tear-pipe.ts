@@ -4,19 +4,29 @@ import { LOLInHouseGameInputDTO } from 'DTO/dto';
 @Injectable()
 export class ChangeTierPipe implements PipeTransform {
   transform(value: LOLInHouseGameInputDTO, metadata: ArgumentMetadata): any {
-    let changeValue = value.formData;
-    if (!value || !Array.isArray(changeValue)) {
-      return changeValue;
+    let changeValueFromData = value.formData;
+    let changeValueBalanceSelected = value.balanceSelected;
+    if (!value || !Array.isArray(changeValueFromData)) {
+      return value;
     }
 
-    return changeValue.map((item) => {
+    const formData =  changeValueFromData.map((item) => {
       // 티어와 등급 분리 (예: "아이언 1" -> ["아이언", "1"])
       const [tier, division] = item.tier.split(' ');
 
       // MMR 계산
       const mmr = this.calculateMMR(tier, parseInt(division));
-      return { ...item, mmr };
+      return {
+        ...item,
+        mmr,
+      };
     });
+
+    return {
+      formData,
+      balanceSelected : changeValueBalanceSelected
+    }
+    
   }
 
   calculateMMR(tier: string, division: number): number {

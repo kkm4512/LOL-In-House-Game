@@ -28,5 +28,5 @@ export class LOLInHouseGameInputDTO {
   formData: LoLUserPlayers[];
   @IsString()
   @IsNotEmpty()
-  balanceSelected: string;
+  balanceSelected?: string;
 }
