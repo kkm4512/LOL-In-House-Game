@@ -12,4 +12,4 @@
 
 [ 이용방법 ]
 
-![Logo]([https://github.com/사용자명/저장소명/raw/main/assets/logo.png](https://github.com/kkm4512/LOL-In-House-Game/blob/main/%EB%A1%A4_%EB%82%B4%EC%A0%84_%EB%A9%94%EC%9D%B8%ED%99%94%EB%A9%B4.png))
+![Logo](https://github.com/kkm4512/LOL-In-House-Game/blob/main/%EB%A1%A4_%EB%82%B4%EC%A0%84_%EB%A9%94%EC%9D%B8%ED%99%94%EB%A9%B4.png?raw=true)
