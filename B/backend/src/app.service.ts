@@ -277,8 +277,14 @@ export class AppService {
     }
 
     // 모든 플레이어의 mainRole이 유효하면, 팀을 생성하는 로직을 실행
-
-    return this.createBalancedTeams(lolUserPlayers, balance);
+    while (true) {
+      const haved = this.createBalancedTeams(lolUserPlayers, balance);
+      if (haved) {
+        return haved
+      } else {
+        continue
+      }
+    }
   }
 
   createBalancedTeams(lolUserPlayers: LoLUserPlayers[], balance?: string) {
@@ -297,8 +303,9 @@ export class AppService {
 
     let count = 0;
     let players = new Map<number, FinalDistribution>();
+    let compareCount = 1000;
 
-    while (count < 1000) {
+    while (count < compareCount) {
       count++
       // 초기 팀 분배 수행
       let { seted_A_Team, seted_B_Team } =
@@ -334,8 +341,8 @@ export class AppService {
 
       if ( AB_TEAM_MMR >= balances[balance] ) continue
       players.set(count,finalDistribution)
-      if (count === 9) {
-        for ( let i=1; i<=10; i++ ) {
+      if (count === compareCount) {
+        for ( let i=1; i<=compareCount; i++ ) {
           const has = players.has(i)
           const get = players.get(i)
           if (has) {
@@ -344,7 +351,6 @@ export class AppService {
         }
         const minScoreObject = rank.reduce((min, item) => item.score < min.score ? item : min, rank[0]);
         const minScoreId = minScoreObject.id;
-        if (!rank) count = 0;
         return players.get(minScoreId)
       }
     }
