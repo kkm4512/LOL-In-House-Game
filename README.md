@@ -1,3 +1,6 @@
+Fronend = Nuxt3
+Backend = Nestjs
+
 [ Backend ]
 
 1. 터미널 실행 경로를 B\backend\src 폴더 마우스 우클릭을 통하여 터미널을 연다.
